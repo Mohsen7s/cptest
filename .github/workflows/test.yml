@@ -25,7 +25,7 @@ jobs:
 
       - name: Try Install containerd 2
         run: |
-          sudo dockerd --containerd /run/containerd/containerd.sock
+          sudo dockerd --containerd /run/containerd/containerd.sock & sleep 10
           
           
       - name: Enable Docker Experimental

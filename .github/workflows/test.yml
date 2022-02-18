@@ -56,7 +56,7 @@ jobs:
   runCp:
     name: run freezed container
     runs-on: ubuntu-latest
-    needs: browser
+    needs: makeCp
     steps:
 
       - name: Enable Docker Experimental

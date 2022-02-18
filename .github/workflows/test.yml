@@ -47,11 +47,6 @@ jobs:
           sudo cp -r /var/lib/docker/containers/$(docker ps -aq --no-trunc --filter name=cr)/checkpoints/checkpoint0 cpdir
           sudo chmod -R 7777 cpdir
 
-#          mkdir cpdir \
-#            && (docker run -it -d --privileged --name tbb ubuntu) \
-#            && (docker exec -i tbb bash -c 'i=0; while true; do echo $i; i=$(expr $i + 1); sleep 1; done') \
-#            & (sleep 20; docker checkpoint create --leave-running=true $(docker ps -q) cp0; sudo cp -r /var/lib/docker/containers/$(docker ps -aq --no-trunc --filter name=tbb)/checkpoints/cp0 cpdir; sudo chmod -R 7777 cpdir; )
- 
 
   runCp:
     name: run freezed container
@@ -89,7 +84,7 @@ jobs:
         shell: 'script -q -e -c "bash {0}"'      
         run: |
           docker create --security-opt=seccomp:unconfined --name cr busybox /bin/sh -c 'i=0; while true; do echo $i; i=$(expr $i + 1); sleep 1; done'
-          sudo mv cpdir/checkpoint0 /var/lib/docker/containers/$(docker ps -aq --no-trunc --filter name=tbb)/checkpoints/
+          sudo mv cpdir/checkpoint0 /var/lib/docker/containers/$(docker ps -aq --no-trunc --filter name=cr)/checkpoints/
           docker start --checkpoint checkpoint0 cr
           sleep 10
           docker logs cr

@@ -13,7 +13,21 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps: 
-                   
+
+      - name: Try Install containerd 1
+        run: |
+          sudo systemctl stop containerd.service
+          
+
+
+      - name: Set up containerd
+        uses: crazy-max/ghaction-setup-containerd@v1
+
+      - name: Try Install containerd 2
+        run: |
+          sudo dockerd --containerd /run/containerd/containerd.sock
+          
+          
       - name: Enable Docker Experimental
         run: |  
           #, "storage-driver": "vfs"

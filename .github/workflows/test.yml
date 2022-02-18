@@ -31,6 +31,7 @@ jobs:
       - name: Enable Docker Experimental
         run: |  
           #, "storage-driver": "vfs"
+          docker version
           systemctl --type=service
           echo $'{\n  "experimental": true \n}' | sudo tee /etc/docker/daemon.json
           mkdir -p ~/.docker

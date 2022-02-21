@@ -16,19 +16,20 @@ jobs:
 
       - name: Try Install containerd 1
         run: |
-          sudo snap remove docker-ce docker-ce-cli containerd-io docker docker-engine docker-io containerd runc
-          sudo apt-get remove -y moby-engine mobi-cli
-
-          sudo apt-get purge docker-ce docker-ce-cli containerd.io
-          sudo apt-get remove docker docker-engine docker.io containerd runc
-          sudo rm -rf /var/lib/docker
-          sudo rm -rf /var/lib/containerd
-          dpkg -l | grep -i docker
-          sudo apt remove --purge docker-ce docker-ce-cli containerd.io
-          sudo rm -rf /var/lib/docker
-          sudo rm -rf /var/lib/containerd
-          sudo apt autoremove -y
-          sudo apt autoclean
+          sudo apt-get purge '*'
+#          sudo snap remove docker-ce docker-ce-cli containerd-io docker docker-engine docker-io containerd runc
+#          sudo apt-get remove -y moby-engine mobi-cli
+#
+#          sudo apt-get purge docker-ce docker-ce-cli containerd.io
+#          sudo apt-get remove docker docker-engine docker.io containerd runc
+#          sudo rm -rf /var/lib/docker
+#          sudo rm -rf /var/lib/containerd
+#          dpkg -l | grep -i docker
+#          sudo apt remove --purge docker-ce docker-ce-cli containerd.io
+#          sudo rm -rf /var/lib/docker
+#          sudo rm -rf /var/lib/containerd
+#          sudo apt autoremove -y
+#          sudo apt autoclean
 
 
       - name: Set up containerd

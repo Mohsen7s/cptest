@@ -20,6 +20,12 @@ jobs:
           sudo apt-get remove docker docker-engine docker.io containerd runc
           sudo rm -rf /var/lib/docker
           sudo rm -rf /var/lib/containerd
+          dpkg -l | grep -i docker
+          sudo apt remove --purge docker-ce docker-ce-cli containerd.io
+          sudo rm -rf /var/lib/docker
+          sudo rm -rf /var/lib/containerd
+          sudo apt autoremove -y
+          sudo apt autoclean
 
 
       - name: Set up containerd
@@ -49,7 +55,7 @@ jobs:
       - name: Try run containerd
         run: |
           sudo ctr version
-          sudo ctr run --net-host --id test docker.io/library/redis:alpine
+          sudo ctr run --net-host test docker.io/library/redis:alpine
           
       - name: Cache Checkpoint
         id: cache-cp

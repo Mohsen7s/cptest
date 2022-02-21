@@ -52,6 +52,7 @@ jobs:
       - name: pull busybox latest
         run: |
           which ctr
+          ./opt/hostedtoolcache/ghaction-setup-containerd/1.6.0/x64/bin/ctr version
           sudo ctr image pull --all-platforms docker.io/library/busybox:latest
         
       - name: Try run containerd

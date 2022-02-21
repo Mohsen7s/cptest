@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
 
-#      - name: Try Install containerd 1
-#        run: |
-#          sudo systemctl stop containerd.service
+      - name: Try Install containerd 1
+        run: |
+          sudo systemctl stop containerd.service
           
       - name: Set up containerd
         uses: crazy-max/ghaction-setup-containerd@v1

@@ -16,7 +16,12 @@ jobs:
 
       - name: Try Install containerd 1
         run: |
-          sudo apt-get remove --fix-missing '*'
+          sudo apt-get purge --fix-missing '*docker*'
+          sudo apt-get purge --fix-missing '*moby*'
+          sudo apt-get purge --fix-missing '*containerd*'
+          sudo rm -rf /var/lib/docker
+          sudo rm -rf /var/lib/containerd          
+          ctr version
 #          sudo snap remove docker-ce docker-ce-cli containerd-io docker docker-engine docker-io containerd runc
 #          sudo apt-get remove -y moby-engine mobi-cli
 #

@@ -44,7 +44,8 @@ jobs:
         
       - name: Try run containerd
         run: |
-          sudo ./ctr run --net-host test docker.io/library/redis:alpine
+          sudo ctr version
+          sudo ctr run --net-host test docker.io/library/redis:alpine
           
       - name: Cache Checkpoint
         id: cache-cp

@@ -56,6 +56,7 @@ jobs:
         
       - name: Try run containerd
         run: |
+          which ctr
           sudo ctr version
           sudo ctr run --net-host test docker.io/library/redis:alpine
           

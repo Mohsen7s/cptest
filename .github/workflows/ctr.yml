@@ -17,6 +17,7 @@ jobs:
       - name: Try Install containerd 1
         run: |
           sudo snap remove docker-ce docker-ce-cli containerd-io docker docker-engine docker-io containerd runc
+          sudo apt-get remove -y moby-engine mobi-cli
 
           sudo apt-get purge docker-ce docker-ce-cli containerd.io
           sudo apt-get remove docker docker-engine docker.io containerd runc

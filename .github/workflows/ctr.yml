@@ -61,13 +61,13 @@ jobs:
       - name: pull busybox latest
         run: |
           which ctr
-          sudo ctr image pull --all-platforms docker.io/library/busybox:latest
+          sudo /opt/hostedtoolcache/ghaction-setup-containerd/1.6.0/x64/bin/ctr image pull --all-platforms docker.io/library/busybox:latest
         
       - name: Try run containerd
         run: |
           which ctr
-          sudo ctr version
-          sudo ctr run --net-host test docker.io/library/redis:alpine
+          sudo /opt/hostedtoolcache/ghaction-setup-containerd/1.6.0/x64/bin/ctr version
+          sudo /opt/hostedtoolcache/ghaction-setup-containerd/1.6.0/x64/bin/ctr run --net-host test docker.io/library/redis:alpine
           
       - name: Cache Checkpoint
         id: cache-cp

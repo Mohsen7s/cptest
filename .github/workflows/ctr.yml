@@ -1,0 +1,107 @@
+name: Test Checkpoint Builder
+
+on:
+  push :
+    paths:
+        - '.github/workflows/ctr.yml'
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  makeCp:
+    name: Build
+    runs-on: ubuntu-latest
+    steps: 
+
+#      - name: Try Install containerd 1
+#        run: |
+#          sudo systemctl stop containerd.service
+          
+      - name: Set up containerd
+        uses: crazy-max/ghaction-setup-containerd@v1
+
+#      - name: Try Install containerd 2
+#        run: |
+#          sudo dockerd --containerd /run/containerd/containerd.sock & sleep 10
+          
+          
+#      - name: Enable Docker Experimental
+#        run: |  
+#          #, "storage-driver": "vfs"
+#          docker version
+#          systemctl --type=service
+#          echo $'{\n  "experimental": true \n}' | sudo tee /etc/docker/daemon.json
+#          mkdir -p ~/.docker
+#          echo $'{\n  "experimental": "enabled"\n}' | sudo tee ~/.docker/config.json
+#          sudo service docker restart
+#          docker version -f '{{.Client.Experimental}}'
+#          docker version -f '{{.Server.Experimental}}'
+#          docker version
+
+      - name: pull busybox latest
+        run: sudo ctr image pull --all-platforms docker.io/library/busybox:latest
+        
+      - name: Try run containerd
+        run: |
+          sudo ./ctr run --net-host test docker.io/library/redis:alpine
+          
+      - name: Cache Checkpoint
+        id: cache-cp
+        uses: actions/cache@v2
+        with:
+          path: cpdir
+          key: ${{ runner.os }}-${{ github.sha }}
+
+ 
+
+      - name: Check out code base
+        shell: 'script -q -e -c "bash {0}"'       
+        run: |
+          mkdir cpdir
+          docker run --security-opt=seccomp:unconfined --name cr -d busybox /bin/sh -c 'i=0; while true; do echo $i; i=$(expr $i + 1); sleep 1; done'
+          sleep 10
+          docker logs cr
+          docker checkpoint create  --leave-running=true cr checkpoint0
+          sudo cp -r /var/lib/docker/containers/$(docker ps -aq --no-trunc --filter name=cr)/checkpoints/checkpoint0 cpdir
+          sudo chmod -R 7777 cpdir
+  runCp:
+    name: run freezed container
+    runs-on: ubuntu-latest
+    needs: makeCp
+    steps:
+
+      - name: Enable Docker Experimental
+        run: |
+          #, "storage-driver": "vfs"
+          echo $'{\n  "experimental": true \n}' | sudo tee /etc/docker/daemon.json
+          mkdir -p ~/.docker
+          echo $'{\n  "experimental": "enabled"\n}' | sudo tee ~/.docker/config.json
+          sudo service docker restart
+          docker version -f '{{.Client.Experimental}}'
+          docker version -f '{{.Server.Experimental}}'
+          docker version
+          
+      - name: Cache Checkpoint
+        id: cache-cp
+        uses: actions/cache@v2
+        with:
+          path: cpdir
+          key: ${{ runner.os }}-${{ github.sha }}
+
+      - name: Find Cache
+        if: ${{ steps.cache-cp.outputs.cache-hit == 'false' }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Cache doesnt exist!')
+        
+      - name: Execute container from checkpoint
+        if: steps.cache-cp.outputs.cache-hit == 'true'
+        shell: 'script -q -e -c "bash {0}"'      
+        run: |
+          docker create --security-opt=seccomp:unconfined --name cr busybox /bin/sh -c 'i=0; while true; do echo $i; i=$(expr $i + 1); sleep 1; done'
+          sudo mv cpdir/checkpoint0 /var/lib/docker/containers/$(docker ps -aq --no-trunc --filter name=cr)/checkpoints/
+          docker start --checkpoint checkpoint0 cr
+          sleep 10
+          docker logs cr

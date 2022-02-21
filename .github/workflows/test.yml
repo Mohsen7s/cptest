@@ -26,7 +26,10 @@ jobs:
           sudo service docker restart
           docker version -f '{{.Client.Experimental}}'
           docker version -f '{{.Server.Experimental}}'
+          echo "Docker version:"
           docker version
+          echo "Docker info:"
+          docker info
             
 
       - name: Cache Checkpoint

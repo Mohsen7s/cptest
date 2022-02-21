@@ -16,8 +16,12 @@ jobs:
 
       - name: Try Install containerd 1
         run: |
-          sudo systemctl stop containerd.service
-          
+          sudo apt-get purge docker-ce docker-ce-cli containerd.io
+          sudo apt-get remove docker docker-engine docker.io containerd runc
+          sudo rm -rf /var/lib/docker
+          sudo rm -rf /var/lib/containerd
+
+
       - name: Set up containerd
         uses: crazy-max/ghaction-setup-containerd@v1
 

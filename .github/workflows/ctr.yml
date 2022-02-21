@@ -50,7 +50,9 @@ jobs:
 #          docker version
 
       - name: pull busybox latest
-        run: sudo ctr image pull --all-platforms docker.io/library/busybox:latest
+        run: |
+          which ctr
+          sudo ctr image pull --all-platforms docker.io/library/busybox:latest
         
       - name: Try run containerd
         run: |
